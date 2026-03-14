@@ -1,6 +1,5 @@
 - name: configuring demo
   hosts:  "{{ component}}"
-  connection: local
   become: yes
   roles:
   - "{{ component}}"
