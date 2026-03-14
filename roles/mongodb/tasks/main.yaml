@@ -1,0 +1,34 @@
+
+  # Any service installation done from the /etc/yum.repos.d/repo file name
+  - name: copy the mongo repo to /etc/yum.repos.d/mongo.repo
+    ansible.builtin.copy:
+        src: mongo.repo  # Path on the Ansible control node
+        dest:  /etc/yum.repos.d/mongo.repo
+  
+  - name: Install MongoDB packages
+    ansible.builtin.dnf:
+      name: mongodb-org
+      state: present 
+
+ 
+  # Actually mongodb by defaults open port to the local host. So we can only access mongodb within local host
+  # We want to connect the mongodb from the outside servers also. so that we changed to 0.0.0.0
+  - name: Replace the  listen address from 127.0.0.1 to 0.0.0.0 in #/etc/mongod.conf                  
+    ansible.builtin.replace:
+      path: /etc/mongod.conf
+      regexp: '127.0.0.1'
+      replace: '0.0.0.0'
+      backup: yes    
+    
+
+  - name: Enable service MongoDB
+    ansible.builtin.service:
+      name: mongod
+      enabled: yes
+      state: started
+
+
+  - name: Restart the MongoDB server
+    ansible.builtin.service:
+      name: mongod
+      state: restarted  
