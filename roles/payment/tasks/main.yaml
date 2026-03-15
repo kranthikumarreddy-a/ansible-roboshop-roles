@@ -13,8 +13,11 @@
     name: common
     tasks_from: systemd-setup.yaml   
 
+- name: unmask payment service
+  command: systemctl unmask payment
+
 - name: restart python
   ansible.builtin.service:
     name: payment
-    state: restarted    
+    state: restarted
     enabled: yes
